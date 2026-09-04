@@ -109,6 +109,75 @@ input {
     background: #fff;
     color: #18202a;
 }
+fieldset {
+    min-width: 0;
+    margin: 0;
+    padding: 0;
+    border: 0;
+}
+legend {
+    padding: 0;
+}
+.level-options {
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: 0.5rem;
+}
+.check-option {
+    display: grid;
+    justify-items: center;
+    gap: 0.45rem;
+    padding: 0.7rem 0.35rem;
+    border: 1px solid #cbd4e2;
+    border-radius: 0.7rem;
+    color: #354052;
+    cursor: pointer;
+    font-size: 0.85rem;
+    transition:
+        border-color 120ms ease,
+        background 120ms ease,
+        color 120ms ease;
+}
+.check-option:has(input:checked) {
+    border-color: #5167c7;
+    background: #eef1ff;
+    color: #3d4e9c;
+}
+.check-option input {
+    width: 1rem;
+    height: 1rem;
+    margin: 0;
+    accent-color: #5167c7;
+}
+.check-option:focus-within {
+    outline: 3px solid rgb(81 103 199 / 28%);
+    outline-offset: 2px;
+}
+.range-label,
+.range-limits {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.range-label output {
+    color: #5167c7;
+    font-size: 1.05rem;
+}
+.range-input {
+    width: 100%;
+    padding: 0;
+    border: 0;
+    accent-color: #5167c7;
+    cursor: grab;
+}
+.range-input:active {
+    cursor: grabbing;
+}
+.range-limits {
+    color: #7a8493;
+    font-size: 0.8rem;
+    font-weight: 600;
+}
 select:focus,
 input:focus,
 button:focus-visible {
@@ -296,6 +365,9 @@ button:focus-visible {
 }
 
 @media (max-width: 560px) {
+    .level-options {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
     .form-grid {
         grid-template-columns: 1fr;
     }

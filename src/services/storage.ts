@@ -1,4 +1,4 @@
-import type { TestResult, TestSession } from '@/types/domain'
+import type { JlptLevel, TestConfig, TestResult, TestSession } from '@/types/domain'
 
 export const ACTIVE_SESSION_KEY = 'ez-nihongo:active-session:v1'
 export const HISTORY_KEY = 'ez-nihongo:history:v1'
@@ -39,6 +39,22 @@ function isSession(value: unknown): value is TestSession {
     )
 }
 
+function migrateSession(value: unknown): TestSession | null {
+    if (!isSession(value)) return null
+
+    const config = value.config as Partial<TestConfig> & { level?: JlptLevel }
+    if (Array.isArray(config.levels)) return value
+    if (config.level === undefined || typeof config.questionCount !== 'number') return null
+
+    return {
+        ...value,
+        config: {
+            levels: [config.level],
+            questionCount: config.questionCount,
+        },
+    }
+}
+
 function isResult(value: unknown): value is TestResult {
     if (typeof value !== 'object' || value === null) return false
     const candidate = value as Partial<TestResult>
@@ -58,7 +74,8 @@ export function loadActiveSession(): TestSession | null {
 
     try {
         const parsed: unknown = JSON.parse(raw)
-        if (isSession(parsed)) return parsed
+        const session = migrateSession(parsed)
+        if (session) return session
     } catch {
         // Remove malformed JSON below.
     }

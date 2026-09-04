@@ -156,14 +156,48 @@ export async function loadQuestions(config: TestConfig): Promise<{
     const seen = new Set<string>()
     const questions: VocabularyWord[] = []
     const levelsUsed: JlptLevel[] = []
+    const selectedLevels = [...new Set(config.levels)]
 
-    for (const level of fallbackLevels(config.level)) {
+    if (selectedLevels.length === 0) {
+        throw new VocabularyApiError('Choose at least one JLPT level.')
+    }
+
+    const addWords = async (level: JlptLevel, needed: number): Promise<void> => {
+        if (needed === 0) return
+
+        const words = await fetchUniqueWords(level, needed, seen)
+        if (words.length > 0 && !levelsUsed.includes(level)) levelsUsed.push(level)
+        questions.push(...words)
+    }
+
+    const basePerLevel = Math.floor(config.questionCount / selectedLevels.length)
+    let extraQuestions = config.questionCount % selectedLevels.length
+
+    for (const level of selectedLevels) {
+        const target = basePerLevel + (extraQuestions > 0 ? 1 : 0)
+        extraQuestions -= 1
+        await addWords(level, target)
+    }
+
+    if (selectedLevels.length > 1) {
+        for (const level of selectedLevels) {
+            const remaining = config.questionCount - questions.length
+            if (remaining === 0) break
+
+            await addWords(level, remaining)
+        }
+    }
+
+    const fallbackCandidates = selectedLevels.flatMap((level) =>
+        fallbackLevels(level).filter((candidate) => !selectedLevels.includes(candidate)),
+    )
+    const candidateLevels = [...new Set(fallbackCandidates)]
+
+    for (const level of candidateLevels) {
         const remaining = config.questionCount - questions.length
         if (remaining === 0) break
 
-        const words = await fetchUniqueWords(level, remaining, seen)
-        if (words.length > 0) levelsUsed.push(level)
-        questions.push(...words)
+        await addWords(level, remaining)
     }
 
     if (questions.length < config.questionCount) {

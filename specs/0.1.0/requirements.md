@@ -4,8 +4,8 @@
 
 ### US-01 — Configurar un test
 
-Como estudiante, quiero elegir un nivel JLPT y una cantidad de palabras para
-iniciar una sesión de práctica ajustada a mi objetivo.
+Como estudiante, quiero elegir varios niveles JLPT y una cantidad de palabras
+para iniciar una sesión de práctica combinada y ajustada a mi objetivo.
 
 ### US-02 — Responder vocabulario
 
@@ -26,7 +26,7 @@ perder temporalmente la conexión.
 
 ### REQ-01 — Configuración
 
-- Los niveles disponibles son N5, N4, N3, N2 y N1.
+- Los niveles disponibles son N5, N4, N3, N2 y N1, y se puede elegir más de uno.
 - Las cantidades disponibles son 10, 20, …, 100.
 - El test no comienza hasta que se han cargado todas las preguntas.
 

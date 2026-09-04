@@ -8,7 +8,7 @@ import router from '@/router'
 
 const session: TestSession = {
     version: 1,
-    config: { level: 5, questionCount: 1 },
+    config: { levels: [5], questionCount: 1 },
     questions: [{ word: '猫', meaning: 'cat', furigana: 'ねこ', romaji: 'neko', level: 5 }],
     currentIndex: 0,
     answers: [],

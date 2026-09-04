@@ -8,11 +8,11 @@ const questions: VocabularyWord[] = [
     { word: '猫', meaning: 'cat', furigana: 'ねこ', romaji: 'neko', level: 5 },
     { word: '犬', meaning: 'dog', furigana: 'いぬ', romaji: 'inu', level: 5 },
 ]
-const config: TestConfig = { level: 5, questionCount: 2 }
+const config: TestConfig = { levels: [5], questionCount: 2 }
 
 type LoadQuestions = (config: TestConfig) => Promise<{
     questions: VocabularyWord[]
-    levelsUsed: TestConfig['level'][]
+    levelsUsed: TestConfig['levels']
 }>
 
 describe('test session store', () => {

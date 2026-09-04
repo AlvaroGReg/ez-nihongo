@@ -20,7 +20,7 @@ cada transición de estado.
 
 - `JlptLevel`: `1 | 2 | 3 | 4 | 5`, con presentación `N1`–`N5`.
 - `VocabularyWord`: `word`, `meaning`, `furigana`, `romaji` y `level`.
-- `TestConfig`: `level` y `questionCount`.
+- `TestConfig`: `levels` y `questionCount`.
 - `TestQuestion`: entrada de vocabulario usada en una sesión.
 - `TestAnswer`: índice de pregunta, respuesta original, respuesta esperada y
   resultado.

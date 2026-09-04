@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { nextTick, onMounted, ref, watch } from 'vue'
+import { computed, nextTick, onMounted, ref, watch } from 'vue'
 import { useRouter } from 'vue-router'
 
 import { testSession } from '@/stores/testSession'
@@ -9,6 +9,10 @@ const response = ref('')
 const inputError = ref('')
 const responseInput = ref<HTMLInputElement | null>(null)
 const currentQuestion = testSession.currentQuestion
+const hasFallbackLevels = computed(() => {
+    const session = testSession.state.activeSession
+    return session?.levelsUsed.some((level) => !session.config.levels.includes(level)) ?? false
+})
 
 function focusResponse(): void {
     void nextTick(() => responseInput.value?.focus())
@@ -62,7 +66,13 @@ watch(
         <header class="test-header">
             <div>
                 <p class="eyebrow">
-                    JLPT N{{ 6 - testSession.state.activeSession.config.level }} practice
+                    JLPT
+                    {{
+                        testSession.state.activeSession.config.levels
+                            .map((level) => `N${level}`)
+                            .join(' + ')
+                    }}
+                    practice
                 </p>
                 <p class="progress-label">
                     Question {{ testSession.state.activeSession.currentIndex + 1 }} of
@@ -72,11 +82,8 @@ watch(
             <button class="button button-quiet" type="button" @click="abandon">Abandon</button>
         </header>
 
-        <p
-            v-if="testSession.state.activeSession.levelsUsed.length > 1"
-            class="message message-info"
-        >
-            This test includes adjacent JLPT levels because the selected level did not have enough
+        <p v-if="hasFallbackLevels" class="message message-info">
+            This test includes adjacent JLPT levels because the selected levels did not have enough
             words.
         </p>
 

@@ -6,7 +6,7 @@ import { testSession } from '@/stores/testSession'
 import type { JlptLevel } from '@/types/domain'
 
 const router = useRouter()
-const selectedLevel = ref<JlptLevel>(5)
+const selectedLevels = ref<JlptLevel[]>([5])
 const questionCount = ref(10)
 const validationError = ref('')
 
@@ -17,12 +17,16 @@ const levels = [
     { value: 2 as JlptLevel, label: 'N2' },
     { value: 1 as JlptLevel, label: 'N1' },
 ]
-const questionOptions = Array.from({ length: 10 }, (_, index) => (index + 1) * 10)
 const hasApiError = computed(() => testSession.state.error !== null)
 
 async function startTest(): Promise<void> {
     validationError.value = ''
     testSession.clearError()
+
+    if (selectedLevels.value.length === 0) {
+        validationError.value = 'Choose at least one JLPT level.'
+        return
+    }
 
     if (questionCount.value < 10 || questionCount.value > 100) {
         validationError.value = 'Choose between 10 and 100 words.'
@@ -31,7 +35,7 @@ async function startTest(): Promise<void> {
 
     if (
         await testSession.startTest({
-            level: selectedLevel.value,
+            levels: [...selectedLevels.value],
             questionCount: questionCount.value,
         })
     ) {
@@ -59,22 +63,38 @@ function backToSetup(): void {
 
             <form class="setup-form" @submit.prevent="startTest">
                 <div class="form-grid">
-                    <label class="field">
-                        <span>JLPT level</span>
-                        <select v-model="selectedLevel">
-                            <option v-for="level in levels" :key="level.value" :value="level.value">
-                                {{ level.label }}
-                            </option>
-                        </select>
-                    </label>
+                    <fieldset class="field level-fieldset">
+                        <legend>JLPT levels</legend>
+                        <div class="level-options">
+                            <label v-for="level in levels" :key="level.value" class="check-option">
+                                <input
+                                    v-model="selectedLevels"
+                                    type="checkbox"
+                                    :value="level.value"
+                                />
+                                <span>{{ level.label }}</span>
+                            </label>
+                        </div>
+                    </fieldset>
 
                     <label class="field">
-                        <span>Number of words</span>
-                        <select v-model.number="questionCount">
-                            <option v-for="count in questionOptions" :key="count" :value="count">
-                                {{ count }}
-                            </option>
-                        </select>
+                        <span class="range-label">
+                            <span>Number of words</span>
+                            <output>{{ questionCount }}</output>
+                        </span>
+                        <input
+                            v-model.number="questionCount"
+                            class="range-input"
+                            type="range"
+                            min="10"
+                            max="100"
+                            step="10"
+                            aria-label="Number of words"
+                        />
+                        <span class="range-limits" aria-hidden="true">
+                            <span>10</span>
+                            <span>100</span>
+                        </span>
                     </label>
                 </div>
 

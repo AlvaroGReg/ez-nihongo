@@ -32,7 +32,7 @@ describe('vocabulary API adapter', () => {
         })
         vi.stubGlobal('fetch', fetchMock)
 
-        const result = await loadQuestions({ level: 3, questionCount: 2 })
+        const result = await loadQuestions({ levels: [3], questionCount: 2 })
 
         expect(result.questions).toHaveLength(2)
         expect(result.questions[0]?.meaning).toBeTruthy()
@@ -62,13 +62,41 @@ describe('vocabulary API adapter', () => {
             })
         vi.stubGlobal('fetch', fetchMock)
 
-        const result = await loadQuestions({ level: 3, questionCount: 3 })
+        const result = await loadQuestions({ levels: [3], questionCount: 3 })
 
         expect(result.questions).toHaveLength(3)
         expect(result.levelsUsed).toEqual([3, 4, 2])
         expect(
             fetchMock.mock.calls.map(([url]) => new URL(url.toString()).searchParams.get('level')),
         ).toEqual(['3', '4', '2'])
+    })
+
+    it('combines questions from every selected level', async () => {
+        const fetchMock = vi
+            .fn<FetchMock>()
+            .mockResolvedValueOnce({
+                ok: true,
+                json: async () =>
+                    page(5, [
+                        { word: 'A', meaning: 'A', furigana: 'あ', romaji: 'a' },
+                        { word: 'B', meaning: 'B', furigana: 'び', romaji: 'bi' },
+                    ]),
+            })
+            .mockResolvedValueOnce({
+                ok: true,
+                json: async () =>
+                    page(3, [
+                        { word: 'C', meaning: 'C', furigana: 'し', romaji: 'shi' },
+                        { word: 'D', meaning: 'D', furigana: 'で', romaji: 'de' },
+                    ]),
+            })
+        vi.stubGlobal('fetch', fetchMock)
+
+        const result = await loadQuestions({ levels: [5, 3], questionCount: 4 })
+
+        expect(result.questions).toHaveLength(4)
+        expect(result.questions.map((word) => word.level).sort()).toEqual([3, 3, 5, 5])
+        expect(result.levelsUsed).toEqual([5, 3])
     })
 
     it('reports an error when all levels are insufficient', async () => {
@@ -80,7 +108,7 @@ describe('vocabulary API adapter', () => {
             }),
         )
 
-        await expect(loadQuestions({ level: 1, questionCount: 10 })).rejects.toBeInstanceOf(
+        await expect(loadQuestions({ levels: [1], questionCount: 10 })).rejects.toBeInstanceOf(
             VocabularyApiError,
         )
     })

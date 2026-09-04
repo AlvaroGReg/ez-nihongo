@@ -9,7 +9,7 @@ export interface VocabularyWord {
 }
 
 export interface TestConfig {
-    level: JlptLevel
+    levels: JlptLevel[]
     questionCount: number
 }
 
