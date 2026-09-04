@@ -2,6 +2,7 @@
 import { computed, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 
+import { t } from '@/i18n'
 import { testSession } from '@/stores/testSession'
 
 const router = useRouter()
@@ -29,24 +30,26 @@ function startAnotherTest(): void {
 <template>
     <main v-if="result" class="page-shell result-page">
         <section class="result-card" aria-labelledby="result-title">
-            <p class="eyebrow">Test complete</p>
-            <h1 id="result-title">Your result</h1>
-            <div class="score" aria-label="Test score">
+            <p class="eyebrow">{{ t('testComplete') }}</p>
+            <h1 id="result-title">{{ t('yourResult') }}</h1>
+            <div class="score" :aria-label="t('testScore')">
                 <strong>{{ result.score }}/{{ result.questions.length }}</strong>
                 <span>{{ result.percentage }}%</span>
             </div>
 
-            <p v-if="mistakes.length === 0" class="message message-success">Perfect score!</p>
+            <p v-if="mistakes.length === 0" class="message message-success">
+                {{ t('perfectScore') }}
+            </p>
             <section v-else class="mistakes" aria-labelledby="mistakes-title">
-                <h2 id="mistakes-title">Review your mistakes</h2>
+                <h2 id="mistakes-title">{{ t('reviewMistakes') }}</h2>
                 <ul class="mistake-list">
                     <li v-for="mistake in mistakes" :key="mistake.questionIndex">
                         <strong>{{ mistake.question?.word }}</strong>
                         <span v-if="mistake.question?.furigana">{{
                             mistake.question.furigana
                         }}</span>
-                        <span>Your answer: {{ mistake.response || 'No answer' }}</span>
-                        <span>Correct romanji: {{ mistake.expected }}</span>
+                        <span>{{ t('yourAnswer') }}: {{ mistake.response || t('noAnswer') }}</span>
+                        <span>{{ t('correctRomanji') }}: {{ mistake.expected }}</span>
                     </li>
                 </ul>
             </section>
@@ -56,7 +59,7 @@ function startAnotherTest(): void {
                 type="button"
                 @click="startAnotherTest"
             >
-                Start another test
+                {{ t('startAnotherTest') }}
             </button>
         </section>
     </main>

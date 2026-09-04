@@ -1,10 +1,22 @@
 import { describe, expect, it } from 'vitest'
 import { mount } from '@vue/test-utils'
 
+import { setLocale } from '@/i18n'
 import HomeView from '@/views/HomeView.vue'
 import router from '@/router'
 
 describe('HomeView', () => {
+    it('renders the setup in the selected locale', () => {
+        setLocale('es')
+        const wrapper = mount(HomeView, {
+            global: { plugins: [router] },
+        })
+
+        expect(wrapper.text()).toContain('Empezar test')
+        expect(wrapper.text()).toContain('Niveles JLPT')
+        setLocale('en')
+    })
+
     it('offers all JLPT levels and a draggable question count', () => {
         const wrapper = mount(HomeView, {
             global: { plugins: [router] },

@@ -36,6 +36,7 @@ describe('vocabulary API adapter', () => {
 
         expect(result.questions).toHaveLength(2)
         expect(result.questions[0]?.meaning).toBeTruthy()
+        expect(result.questions[0]?.contentId).toMatch(/^vocabulary:/)
         expect(new Set(result.questions.map((word) => `${word.word}-${word.furigana}`)).size).toBe(
             2,
         )

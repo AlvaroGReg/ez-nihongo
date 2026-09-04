@@ -2,6 +2,7 @@
 import { computed, nextTick, onMounted, ref, watch } from 'vue'
 import { useRouter } from 'vue-router'
 
+import { t } from '@/i18n'
 import { testSession } from '@/stores/testSession'
 
 const router = useRouter()
@@ -26,7 +27,7 @@ function focusFeedback(): void {
 function submitAnswer(): void {
     inputError.value = ''
     if (response.value.trim() === '') {
-        inputError.value = 'Enter a romanji answer.'
+        inputError.value = 'enterRomanji'
         focusResponse()
         return
     }
@@ -71,26 +72,25 @@ watch(
         <header class="test-header">
             <div>
                 <p class="eyebrow">
-                    JLPT
                     {{
-                        testSession.state.activeSession.config.levels
-                            .map((level) => `N${level}`)
-                            .join(' + ')
+                        t('jlptPractice', {
+                            levels: testSession.state.activeSession.config.levels
+                                .map((level) => `N${level}`)
+                                .join(' + '),
+                        })
                     }}
-                    practice
                 </p>
                 <p class="progress-label">
-                    Question {{ testSession.state.activeSession.currentIndex + 1 }} of
-                    {{ testSession.state.activeSession.questions.length }}
+                    {{ t('question') }} {{ testSession.state.activeSession.currentIndex + 1 }}
+                    {{ t('of') }} {{ testSession.state.activeSession.questions.length }}
                 </p>
             </div>
-            <button class="button button-quiet" type="button" @click="abandon">Abandon</button>
+            <button class="button button-quiet" type="button" @click="abandon">
+                {{ t('abandon') }}
+            </button>
         </header>
 
-        <p v-if="hasFallbackLevels" class="message message-info">
-            This test includes adjacent JLPT levels because the selected levels did not have enough
-            words.
-        </p>
+        <p v-if="hasFallbackLevels" class="message message-info">{{ t('fallbackNotice') }}</p>
 
         <section class="question-card" aria-labelledby="question-word">
             <p class="question-index">
@@ -108,7 +108,7 @@ watch(
                 @submit.prevent="submitAnswer"
             >
                 <label class="field" for="romanji-answer">
-                    <span>Your romanji answer</span>
+                    <span>{{ t('romanjiAnswer') }}</span>
                     <input
                         id="romanji-answer"
                         ref="responseInput"
@@ -120,9 +120,11 @@ watch(
                         :aria-invalid="Boolean(inputError)"
                     />
                 </label>
-                <p v-if="inputError" class="message message-error" role="alert">{{ inputError }}</p>
+                <p v-if="inputError" class="message message-error" role="alert">
+                    {{ t(inputError) }}
+                </p>
                 <button class="button button-primary button-wide" type="submit">
-                    Check answer
+                    {{ t('checkAnswer') }}
                 </button>
             </form>
 
@@ -140,20 +142,20 @@ watch(
                 <p class="feedback-title">
                     {{
                         testSession.state.activeSession.pendingFeedback.isCorrect
-                            ? 'Correct!'
-                            : 'Not quite'
+                            ? t('correct')
+                            : t('notQuite')
                     }}
                 </p>
                 <p>
-                    Your answer:
+                    {{ t('yourAnswer') }}:
                     <strong>{{ testSession.state.activeSession.pendingFeedback.response }}</strong>
                 </p>
                 <p>
-                    Meaning:
+                    {{ t('meaning') }}:
                     <strong>{{ currentQuestion.meaning }}</strong>
                 </p>
                 <p v-if="!testSession.state.activeSession.pendingFeedback.isCorrect">
-                    Correct romanji:
+                    {{ t('correctRomanji') }}:
                     <strong>{{ testSession.state.activeSession.pendingFeedback.expected }}</strong>
                 </p>
                 <button
@@ -161,7 +163,7 @@ watch(
                     type="button"
                     @click="continueTest"
                 >
-                    Continue
+                    {{ t('continue') }}
                 </button>
             </section>
         </section>

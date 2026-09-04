@@ -1,13 +1,26 @@
+import { createVocabularyContentId } from '@/services/content'
 import type { JlptLevel, TestConfig, VocabularyWord } from '@/types/domain'
+import type { ContentProvider } from '@/services/contentProvider'
 
 const WORDS_ENDPOINT = 'https://jlpt-vocab-api.vercel.app/api/words'
 
 export class VocabularyApiError extends Error {
-    constructor(message: string) {
-        super(message)
+    constructor(
+        public readonly code: VocabularyApiErrorCode,
+        message?: string,
+    ) {
+        super(message ?? code)
         this.name = 'VocabularyApiError'
     }
 }
+
+export type VocabularyApiErrorCode =
+    | 'providerConnectionError'
+    | 'providerHttpError'
+    | 'providerResponseError'
+    | 'providerPageError'
+    | 'providerJsonError'
+    | 'providerInsufficientError'
 
 interface ApiPage {
     total: number
@@ -38,6 +51,12 @@ function parseWord(value: unknown): VocabularyWord | null {
     }
 
     return {
+        contentId:
+            typeof candidate.contentId === 'string' && candidate.contentId.trim() !== ''
+                ? candidate.contentId
+                : typeof candidate.id === 'string' && candidate.id.trim() !== ''
+                  ? candidate.id
+                  : createVocabularyContentId(candidate.word, candidate.furigana),
         word: candidate.word,
         meaning: candidate.meaning,
         furigana: candidate.furigana,
@@ -48,7 +67,7 @@ function parseWord(value: unknown): VocabularyWord | null {
 
 function parsePage(value: unknown): ApiPage {
     if (typeof value !== 'object' || value === null) {
-        throw new VocabularyApiError('The vocabulary API returned an invalid response.')
+        throw new VocabularyApiError('providerResponseError')
     }
 
     const candidate = value as Record<string, unknown>
@@ -58,7 +77,7 @@ function parsePage(value: unknown): ApiPage {
         typeof candidate.limit !== 'number' ||
         !Array.isArray(candidate.words)
     ) {
-        throw new VocabularyApiError('The vocabulary API returned an invalid page.')
+        throw new VocabularyApiError('providerPageError')
     }
 
     return {
@@ -79,18 +98,18 @@ async function fetchPage(level: JlptLevel, offset: number, limit: number): Promi
     try {
         response = await fetch(url)
     } catch {
-        throw new VocabularyApiError('Could not connect to the vocabulary API.')
+        throw new VocabularyApiError('providerConnectionError')
     }
 
     if (!response.ok) {
-        throw new VocabularyApiError(`The vocabulary API returned HTTP ${response.status}.`)
+        throw new VocabularyApiError('providerHttpError', `HTTP ${response.status}`)
     }
 
     try {
         return parsePage(await response.json())
     } catch (error) {
         if (error instanceof VocabularyApiError) throw error
-        throw new VocabularyApiError('The vocabulary API returned invalid JSON.')
+        throw new VocabularyApiError('providerJsonError')
     }
 }
 
@@ -159,7 +178,7 @@ export async function loadQuestions(config: TestConfig): Promise<{
     const selectedLevels = [...new Set(config.levels)]
 
     if (selectedLevels.length === 0) {
-        throw new VocabularyApiError('Choose at least one JLPT level.')
+        throw new VocabularyApiError('providerResponseError')
     }
 
     const addWords = async (level: JlptLevel, needed: number): Promise<void> => {
@@ -201,9 +220,7 @@ export async function loadQuestions(config: TestConfig): Promise<{
     }
 
     if (questions.length < config.questionCount) {
-        throw new VocabularyApiError(
-            `Only ${questions.length} of ${config.questionCount} questions could be loaded.`,
-        )
+        throw new VocabularyApiError('providerInsufficientError')
     }
 
     return { questions: shuffle(questions), levelsUsed }
@@ -211,4 +228,8 @@ export async function loadQuestions(config: TestConfig): Promise<{
 
 export function getFallbackLevelsForTest(level: JlptLevel): JlptLevel[] {
     return fallbackLevels(level)
+}
+
+export const vocabularyApiProvider: ContentProvider = {
+    loadQuestions,
 }

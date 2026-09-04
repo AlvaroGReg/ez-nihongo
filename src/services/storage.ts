@@ -1,5 +1,6 @@
-import type { JlptLevel, TestConfig, TestResult, TestSession } from '@/types/domain'
+import type { JlptLevel, Locale, TestConfig, TestResult, TestSession } from '@/types/domain'
 
+export const LOCALE_KEY = 'ez-nihongo:locale:v1'
 export const ACTIVE_SESSION_KEY = 'ez-nihongo:active-session:v1'
 export const HISTORY_KEY = 'ez-nihongo:history:v1'
 
@@ -25,6 +26,19 @@ function remove(key: string): void {
     } catch {
         // Ignore storage restrictions and keep the application usable.
     }
+}
+
+function isLocale(value: unknown): value is Locale {
+    return value === 'en' || value === 'es'
+}
+
+export function loadLocale(): Locale | null {
+    const value = read(LOCALE_KEY)
+    return isLocale(value) ? value : null
+}
+
+export function saveLocale(locale: Locale): void {
+    write(LOCALE_KEY, locale)
 }
 
 function isSession(value: unknown): value is TestSession {

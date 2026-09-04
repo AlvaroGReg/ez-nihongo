@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 
-import { ACTIVE_SESSION_KEY, HISTORY_KEY } from '@/services/storage'
+import { ACTIVE_SESSION_KEY, HISTORY_KEY, loadActiveSession } from '@/services/storage'
 import { createTestSessionStore } from '@/stores/testSession'
 import type { TestConfig, VocabularyWord } from '@/types/domain'
 
@@ -33,7 +33,7 @@ describe('test session store', () => {
 
     it('persists answers and resumes a saved session', async () => {
         const load = vi.fn<LoadQuestions>().mockResolvedValue({ questions, levelsUsed: [5] })
-        const firstStore = createTestSessionStore(load)
+        const firstStore = createTestSessionStore({ loadQuestions: load })
         await firstStore.startTest(config)
         firstStore.submitAnswer('neko')
 
@@ -42,6 +42,10 @@ describe('test session store', () => {
 
         expect(secondStore.state.activeSession?.answers[0]?.isCorrect).toBe(true)
         expect(secondStore.state.activeSession?.pendingFeedback).not.toBeNull()
+        expect(secondStore.state.activeSession?.answers[0]?.contentId).toBe(
+            'vocabulary:%E7%8C%AB:%E3%81%AD%E3%81%93',
+        )
+        expect(secondStore.state.activeSession?.attempts).toHaveLength(1)
         expect(secondStore.state.needsResume).toBe(true)
     })
 
@@ -69,5 +73,26 @@ describe('test session store', () => {
         expect(store.state.activeSession).toBeNull()
         expect(store.state.result?.score).toBe(1)
         expect(JSON.parse(window.localStorage.getItem(HISTORY_KEY) ?? '[]')).toHaveLength(1)
+    })
+
+    it('migrates a 0.1 session without rewriting its content or answers', () => {
+        const legacySession = {
+            version: 1,
+            config: { level: 5, questionCount: 1 },
+            questions: [questions[0]],
+            currentIndex: 0,
+            answers: [],
+            pendingFeedback: null,
+            levelsUsed: [5],
+            createdAt: '2026-01-01T00:00:00.000Z',
+        }
+        window.localStorage.setItem(ACTIVE_SESSION_KEY, JSON.stringify(legacySession))
+
+        const migrated = loadActiveSession()
+
+        expect(migrated?.config).toEqual({ levels: [5], questionCount: 1 })
+        expect(migrated?.questions).toEqual(legacySession.questions)
+        expect(migrated?.answers).toEqual([])
+        expect(migrated?.sessionId).toBeUndefined()
     })
 })

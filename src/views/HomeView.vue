@@ -2,6 +2,7 @@
 import { computed, ref } from 'vue'
 import { useRouter } from 'vue-router'
 
+import { t } from '@/i18n'
 import { testSession } from '@/stores/testSession'
 import type { JlptLevel } from '@/types/domain'
 
@@ -24,12 +25,12 @@ async function startTest(): Promise<void> {
     testSession.clearError()
 
     if (selectedLevels.value.length === 0) {
-        validationError.value = 'Choose at least one JLPT level.'
+        validationError.value = 'chooseLevelError'
         return
     }
 
     if (questionCount.value < 10 || questionCount.value > 100) {
-        validationError.value = 'Choose between 10 and 100 words.'
+        validationError.value = 'questionCountError'
         return
     }
 
@@ -55,16 +56,14 @@ function backToSetup(): void {
 <template>
     <main class="page-shell setup-page">
         <section class="hero-card" aria-labelledby="app-title">
-            <p class="eyebrow">Japanese vocabulary practice</p>
-            <h1 id="app-title">EZ Nihongo</h1>
-            <p class="hero-copy">
-                Test your JLPT vocabulary by reading Japanese words and typing their romanji.
-            </p>
+            <p class="eyebrow">{{ t('appEyebrow') }}</p>
+            <h1 id="app-title">{{ t('appTitle') }}</h1>
+            <p class="hero-copy">{{ t('homeDescription') }}</p>
 
             <form class="setup-form" @submit.prevent="startTest">
                 <div class="form-grid">
                     <fieldset class="field level-fieldset">
-                        <legend>JLPT levels</legend>
+                        <legend>{{ t('jlptLevels') }}</legend>
                         <div class="level-options">
                             <label v-for="level in levels" :key="level.value" class="check-option">
                                 <input
@@ -79,7 +78,7 @@ function backToSetup(): void {
 
                     <label class="field">
                         <span class="range-label">
-                            <span>Number of words</span>
+                            <span>{{ t('numberOfWords') }}</span>
                             <output>{{ questionCount }}</output>
                         </span>
                         <input
@@ -89,7 +88,7 @@ function backToSetup(): void {
                             min="10"
                             max="100"
                             step="10"
-                            aria-label="Number of words"
+                            :aria-label="t('numberOfWords')"
                         />
                         <span class="range-limits" aria-hidden="true">
                             <span>10</span>
@@ -99,16 +98,16 @@ function backToSetup(): void {
                 </div>
 
                 <p v-if="validationError" class="message message-error" role="alert">
-                    {{ validationError }}
+                    {{ t(validationError) }}
                 </p>
                 <div v-if="hasApiError" class="error-panel" role="alert">
-                    <p class="message message-error">{{ testSession.state.error }}</p>
+                    <p class="message message-error">{{ t(testSession.state.error ?? '') }}</p>
                     <div class="button-row">
                         <button class="button button-secondary" type="button" @click="retry">
-                            Retry
+                            {{ t('retry') }}
                         </button>
                         <button class="button button-quiet" type="button" @click="backToSetup">
-                            Back to setup
+                            {{ t('backToSetup') }}
                         </button>
                     </div>
                 </div>
@@ -118,7 +117,7 @@ function backToSetup(): void {
                     type="submit"
                     :disabled="testSession.state.isLoading"
                 >
-                    {{ testSession.state.isLoading ? 'Loading vocabulary…' : 'Start test' }}
+                    {{ testSession.state.isLoading ? t('loadingVocabulary') : t('startTest') }}
                 </button>
             </form>
         </section>

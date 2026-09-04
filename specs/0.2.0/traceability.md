@@ -2,18 +2,18 @@
 
 | Requisito | Implementación prevista | Verificación |
 | --- | --- | --- |
-| REQ-01 | Módulo de locale y diccionarios `en`/`es` | Render de claves principales en ambos idiomas |
-| REQ-02 | Persistencia `ez-nihongo:locale:v1` | Recarga y lectura de locale |
-| REQ-03 | Locale solo para presentación | Test de sesión antes/después del cambio |
-| REQ-04 | Tipos de contenido, ejercicio, intento y progreso | Type-check y tests de construcción |
-| REQ-05 | `contentId` estable del adaptador | Test con el mismo contenido en páginas distintas |
-| REQ-06 | Uniones `ContentType` | Type-check y fixture de cada tipo |
-| REQ-07 | Unión `ExerciseType` | Type-check y fixture de cada tipo |
-| REQ-08 | Migración compatible de sesión v1 | Prueba de restauración de fixture 0.1.0 |
-| REQ-09 | Normalización de `meaning` como `en` | Prueba del adaptador externo |
-| REQ-10 | Reutilización de errores y retry | Pruebas existentes de API y HomeView |
-| REQ-11 | Tipos `Plan`/`Capability` locales | Test de matriz de capacidades, sin autoridad de seguridad |
-| REQ-12 | Configuración separada de capacidades | Test de configuración sin cambiar validadores |
+| REQ-01 | `src/i18n/index.ts`, diccionarios `en`/`es` y `App.vue` | `i18n.spec.ts` y render de `HomeView` |
+| REQ-02 | `storage.ts`, clave `ez-nihongo:locale:v1` | `i18n.spec.ts` con persistencia |
+| REQ-03 | Locale solo para presentación; sesión en `testSession.ts` | `testSession.spec.ts` y contratos sin traducciones renderizadas |
+| REQ-04 | `types/domain.ts`, `content.ts` y eventos del store | `content.spec.ts`, `testSession.spec.ts` y type-check |
+| REQ-05 | `createVocabularyContentId` y normalización de `api.ts` | `content.spec.ts` y `api.spec.ts` |
+| REQ-06 | Unión `ContentType` en `types/domain.ts` | Type-check y `content.spec.ts` |
+| REQ-07 | Unión `ExerciseType` y `createReadingExercise` | `content.spec.ts` |
+| REQ-08 | `storage.ts` y migración de configuración heredada | Fixture 0.1.0 en `testSession.spec.ts` |
+| REQ-09 | `parseWord` y `toVocabularyContentItem` | `api.spec.ts` y `content.spec.ts` |
+| REQ-10 | `ContentProvider`, `VocabularyApiError` y flujo existente | `api.spec.ts`, `testSession.spec.ts` y HomeView |
+| REQ-11 | `types/domain.ts` y `entitlements.ts` | `entitlements.spec.ts`, sin autoridad de seguridad |
+| REQ-12 | `PLAN_DEFINITIONS`, separada de validación del test | `entitlements.spec.ts` |
 | Compatibilidad | Vistas y store actuales | `npm run type-check`, `npm run test:unit -- --run`, `npm run build` |
 
 ## Criterio de cierre
