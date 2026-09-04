@@ -17,7 +17,7 @@ export function normalizeRomaji(value: string): string {
 }
 
 function addReplacements(aliases: Set<string>, source: string, replacements: string[]): void {
-    for (const alias of [...aliases]) {
+    for (const alias of aliases) {
         if (!alias.includes(source)) continue
         for (const replacement of replacements) {
             aliases.add(alias.split(source).join(replacement))

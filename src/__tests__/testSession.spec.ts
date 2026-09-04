@@ -99,4 +99,14 @@ describe('test session store', () => {
         expect(window.localStorage.getItem(LEGACY_ACTIVE_SESSION_KEY)).toBeNull()
         expect(window.localStorage.getItem(ACTIVE_SESSION_KEY)).toBeNull()
     })
+
+    it('removes corrupt and unknown current-format sessions', () => {
+        window.localStorage.setItem(ACTIVE_SESSION_KEY, '{not-json')
+        expect(loadActiveSession()).toBeNull()
+        expect(window.localStorage.getItem(ACTIVE_SESSION_KEY)).toBeNull()
+
+        window.localStorage.setItem(ACTIVE_SESSION_KEY, JSON.stringify({ version: 2 }))
+        expect(loadActiveSession()).toBeNull()
+        expect(window.localStorage.getItem(ACTIVE_SESSION_KEY)).toBeNull()
+    })
 })

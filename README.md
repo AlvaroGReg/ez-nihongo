@@ -1,11 +1,14 @@
 # ez-nihongo
 
-An English SPA for practising Japanese JLPT vocabulary. Choose one or more JLPT
-levels and a number of words, then type the romanji reading for each kanji and
-hiragana prompt.
+A localized Vue SPA for practising Japanese JLPT vocabulary. Choose English or
+Spanish, select one or more JLPT levels and type the romanji reading for each
+kanji and hiragana prompt.
 
-The first milestone is version `0.1.0`. Its requirements and implementation
-decisions are documented in [`specs/0.1.0/`](specs/0.1.0/).
+Version `0.2.0` adds the localization, versioned session storage, content and
+exercise contracts, provider adapter, attempt events, and local plan hints. Its
+requirements and implementation decisions are documented in
+[`specs/0.2.0/`](specs/0.2.0/). Authentication, payments and remote progress are
+outside this release.
 
 ## Development
 
