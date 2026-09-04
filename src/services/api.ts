@@ -26,9 +26,11 @@ function parseWord(value: unknown): VocabularyWord | null {
     const candidate = value as Record<string, unknown>
     if (
         typeof candidate.word !== 'string' ||
+        typeof candidate.meaning !== 'string' ||
         typeof candidate.furigana !== 'string' ||
         typeof candidate.romaji !== 'string' ||
         candidate.word.trim() === '' ||
+        candidate.meaning.trim() === '' ||
         candidate.romaji.trim() === '' ||
         !isJlptLevel(candidate.level)
     ) {
@@ -37,6 +39,7 @@ function parseWord(value: unknown): VocabularyWord | null {
 
     return {
         word: candidate.word,
+        meaning: candidate.meaning,
         furigana: candidate.furigana,
         romaji: candidate.romaji,
         level: candidate.level,

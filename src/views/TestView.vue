@@ -133,6 +133,10 @@ watch(
                     Your answer:
                     <strong>{{ testSession.state.activeSession.pendingFeedback.response }}</strong>
                 </p>
+                <p>
+                    Meaning:
+                    <strong>{{ currentQuestion.meaning }}</strong>
+                </p>
                 <p v-if="!testSession.state.activeSession.pendingFeedback.isCorrect">
                     Correct romanji:
                     <strong>{{ testSession.state.activeSession.pendingFeedback.expected }}</strong>

@@ -4,7 +4,7 @@ import { getFallbackLevelsForTest, loadQuestions, VocabularyApiError } from '@/s
 
 function page(
     level: number,
-    words: Array<{ word: string; furigana: string; romaji: string }>,
+    words: Array<{ word: string; meaning: string; furigana: string; romaji: string }>,
     total = words.length,
 ) {
     return {
@@ -25,9 +25,9 @@ describe('vocabulary API adapter', () => {
             ok: true,
             json: async () =>
                 page(3, [
-                    { word: '学生', furigana: 'がくせい', romaji: 'gakusei' },
-                    { word: '学生', furigana: 'がくせい', romaji: 'gakusei' },
-                    { word: '先生', furigana: 'せんせい', romaji: 'sensei' },
+                    { word: '学生', meaning: 'student', furigana: 'がくせい', romaji: 'gakusei' },
+                    { word: '学生', meaning: 'student', furigana: 'がくせい', romaji: 'gakusei' },
+                    { word: '先生', meaning: 'teacher', furigana: 'せんせい', romaji: 'sensei' },
                 ]),
         })
         vi.stubGlobal('fetch', fetchMock)
@@ -35,6 +35,7 @@ describe('vocabulary API adapter', () => {
         const result = await loadQuestions({ level: 3, questionCount: 2 })
 
         expect(result.questions).toHaveLength(2)
+        expect(result.questions[0]?.meaning).toBeTruthy()
         expect(new Set(result.questions.map((word) => `${word.word}-${word.furigana}`)).size).toBe(
             2,
         )
@@ -46,15 +47,18 @@ describe('vocabulary API adapter', () => {
             .fn<FetchMock>()
             .mockResolvedValueOnce({
                 ok: true,
-                json: async () => page(3, [{ word: 'A', furigana: 'あ', romaji: 'a' }]),
+                json: async () =>
+                    page(3, [{ word: 'A', meaning: 'A', furigana: 'あ', romaji: 'a' }]),
             })
             .mockResolvedValueOnce({
                 ok: true,
-                json: async () => page(4, [{ word: 'B', furigana: 'び', romaji: 'bi' }]),
+                json: async () =>
+                    page(4, [{ word: 'B', meaning: 'B', furigana: 'び', romaji: 'bi' }]),
             })
             .mockResolvedValueOnce({
                 ok: true,
-                json: async () => page(2, [{ word: 'C', furigana: 'し', romaji: 'shi' }]),
+                json: async () =>
+                    page(2, [{ word: 'C', meaning: 'C', furigana: 'し', romaji: 'shi' }]),
             })
         vi.stubGlobal('fetch', fetchMock)
 

@@ -5,8 +5,8 @@ import { createTestSessionStore } from '@/stores/testSession'
 import type { TestConfig, VocabularyWord } from '@/types/domain'
 
 const questions: VocabularyWord[] = [
-    { word: '猫', furigana: 'ねこ', romaji: 'neko', level: 5 },
-    { word: '犬', furigana: 'いぬ', romaji: 'inu', level: 5 },
+    { word: '猫', meaning: 'cat', furigana: 'ねこ', romaji: 'neko', level: 5 },
+    { word: '犬', meaning: 'dog', furigana: 'いぬ', romaji: 'inu', level: 5 },
 ]
 const config: TestConfig = { level: 5, questionCount: 2 }
 

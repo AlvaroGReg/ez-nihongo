@@ -9,7 +9,7 @@ import router from '@/router'
 const session: TestSession = {
     version: 1,
     config: { level: 5, questionCount: 1 },
-    questions: [{ word: '猫', furigana: 'ねこ', romaji: 'neko', level: 5 }],
+    questions: [{ word: '猫', meaning: 'cat', furigana: 'ねこ', romaji: 'neko', level: 5 }],
     currentIndex: 0,
     answers: [],
     pendingFeedback: null,
@@ -37,6 +37,8 @@ describe('TestView', () => {
         await wrapper.get('form').trigger('submit')
 
         expect(wrapper.text()).toContain('Correct!')
+        expect(wrapper.text()).toContain('Meaning:')
+        expect(wrapper.text()).toContain('cat')
         expect(wrapper.text()).toContain('Continue')
 
         await wrapper

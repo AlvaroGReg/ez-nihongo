@@ -2,6 +2,7 @@ export type JlptLevel = 1 | 2 | 3 | 4 | 5
 
 export interface VocabularyWord {
     word: string
+    meaning: string
     furigana: string
     romaji: string
     level: JlptLevel

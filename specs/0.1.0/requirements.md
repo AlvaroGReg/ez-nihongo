@@ -60,6 +60,7 @@ And starts only when 20 unique questions are available
 ### REQ-03 — Respuesta
 
 - Se muestra `word` y, si existe, `furigana`.
+- Después de responder se muestra el significado (`meaning`) de la palabra.
 - La comparación ignora mayúsculas, espacios exteriores y diacríticos Unicode.
 - `ō` y `o` son equivalentes; `o` y `ou` no lo son automáticamente.
 - Una respuesta vacía no se corrige y solicita una respuesta.
