@@ -100,7 +100,7 @@ export function createTestSessionStore(load = loadQuestions): TestSessionStore {
             questionIndex: session.currentIndex,
             response,
             expected: question.romaji,
-            isCorrect: isRomajiCorrect(response, question.romaji),
+            isCorrect: isRomajiCorrect(response, question.romaji, question.furigana),
         }
         session.answers.push(answer)
         session.pendingFeedback = answer

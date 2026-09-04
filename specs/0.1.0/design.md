@@ -41,6 +41,10 @@ página inesperada.
 Las palabras se deduplican por su representación visible (`word` + `furigana`)
 y se mezclan antes de crear la sesión.
 
+La comprobación de respuestas conserva `ei` como escritura diferenciada. Usa el
+`furigana` para aceptar `ee`/`ē` solo en `ええ`, mientras que las vocales largas
+aceptan sus formas con macrón y duplicadas; `ō` acepta además `ou` y `oo`.
+
 ## Persistencia
 
 Usar claves versionadas:

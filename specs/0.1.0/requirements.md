@@ -61,8 +61,13 @@ And starts only when 20 unique questions are available
 
 - Se muestra `word` y, si existe, `furigana`.
 - Después de responder se muestra el significado (`meaning`) de la palabra.
-- La comparación ignora mayúsculas, espacios exteriores y diacríticos Unicode.
-- `ō` y `o` son equivalentes; `o` y `ou` no lo son automáticamente.
+- La comparación ignora mayúsculas y espacios exteriores, y normaliza la
+  composición Unicode sin eliminar las marcas de vocal larga.
+- Las vocales largas aceptan sus alias de teclado: `ā`/`aa`, `ī`/`ii`,
+  `ū`/`uu`, `ē`/`ee` para `ええ`, y `ō`/`oo`/`ou` para `おお` o `おう`.
+- `えい` se escribe `ei` aunque suene como una `ē` larga (por ejemplo,
+  `先生` es `sensei`); no se convierte automáticamente en `ee` ni `ē`.
+- Las vocales cortas no equivalen a las largas: `o` y `ou` son distintos.
 - Una respuesta vacía no se corrige y solicita una respuesta.
 
 **Escenario:** respuesta incorrecta
