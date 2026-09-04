@@ -1,0 +1,11 @@
+node_modules
+dist
+dist-ssr
+coverage
+package-lock.json
+*.tsbuildinfo
+.eslintcache
+.git
+.agents
+AGENTS.md
+skills-lock.json
