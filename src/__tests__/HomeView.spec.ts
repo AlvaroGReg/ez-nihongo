@@ -30,4 +30,14 @@ describe('HomeView', () => {
         })
         expect(wrapper.text()).toContain('Start test')
     })
+
+    it('keeps the study plan available as an optional secondary entry', () => {
+        const wrapper = mount(HomeView, {
+            global: { plugins: [router] },
+        })
+
+        expect(wrapper.text()).toContain('Create a study plan')
+        expect(wrapper.text()).toContain('Create a plan')
+        expect(wrapper.find('a[href="#/onboarding"]').exists()).toBe(true)
+    })
 })

@@ -4,13 +4,19 @@ export type Locale = 'en' | 'es'
 
 export type ContentType = 'kana' | 'kanji' | 'vocabulary' | 'grammar' | 'sentence'
 
-export type ExerciseType = 'reading' | 'meaning' | 'writing'
+export type ExerciseType = 'recognition' | 'reading' | 'meaning' | 'writing'
 
 export type StudyMode = 'new' | 'review' | 'mistakes' | 'quick'
 
 export type Plan = 'demo' | 'free' | 'premium'
 
 export type Capability = 'basic-exercises' | 'advanced-exercises' | 'unlimited-review' | 'offline'
+
+export type LearningGoal = 'general' | 'travel' | 'jlpt-n5'
+export type InitialLevel = 'zero' | 'kana' | 'n5'
+export type DailyMinutes = 5 | 10 | 15 | 20
+export type KanaScript = 'hiragana' | 'katakana'
+export type ProgressState = 'new' | 'learning' | 'learned'
 
 export interface LocalizedText {
     en: string
@@ -22,7 +28,57 @@ export interface ContentItem {
     type: ContentType
     level?: JlptLevel
     localized: Record<Locale, LocalizedText | undefined>
-    relations?: string[]
+    reading?: string
+    script?: KanaScript
+    relations?: Array<string | ContentRelation>
+}
+
+export interface ContentRelation {
+    type: 'reading' | 'vocabulary' | 'kanji'
+    contentId: string
+}
+
+export interface CatalogManifest {
+    schemaVersion: 1
+    catalogVersion: string
+    minClientVersion: string
+    locales: Locale[]
+    routes: Array<{ id: 'n5'; unitIds: string[] }>
+    contentFiles: string[]
+    sources: Array<{ id: string; name: string; license: string; url?: string }>
+}
+
+export interface CatalogUnit {
+    id: string
+    routeId: 'n5'
+    order: number
+    title: LocalizedText
+    contentIds: string[]
+    exerciseIds: string[]
+}
+
+export interface CatalogArtifact {
+    manifest: CatalogManifest
+    units: CatalogUnit[]
+    content: ContentItem[]
+    exercises: ExerciseDefinition[]
+}
+
+export interface OnboardingProfile {
+    version: 1
+    goal: LearningGoal
+    initialLevel: InitialLevel
+    dailyMinutes: DailyMinutes
+    placement?: PlacementResult
+    completedAt: string
+}
+
+export interface PlacementResult {
+    version: 1
+    answered: number
+    correct: number
+    recommendedEntry: 'kana' | 'vocabulary' | 'kanji'
+    completedAt: string
 }
 
 export interface ExerciseDefinition {
@@ -31,7 +87,9 @@ export interface ExerciseDefinition {
     type: ExerciseType
     prompt: string
     locale: Locale
-    acceptedAnswers: string[]
+    acceptedAnswers?: string[]
+    options?: Array<{ id: string; label: string; correct: boolean }>
+    showFurigana?: boolean
     premium: boolean
 }
 
@@ -42,6 +100,46 @@ export interface AttemptEvent {
     exerciseId: string
     response: string
     correct: boolean
+    createdAt: string
+    studyMode?: StudyMode
+    occurredOnLocalDate?: string
+}
+
+export interface ProgressRecord {
+    contentId: string
+    attempts: number
+    correctAnswers: number
+    distinctSessions: number
+    correctSessionIds: string[]
+    lastAttemptAt?: string
+    lastMistakeAt?: string
+    state: ProgressState
+}
+
+export interface ProgressStoreData {
+    version: 1
+    records: Record<string, ProgressRecord>
+    events: AttemptEvent[]
+}
+
+export interface Annotation {
+    contentId: string
+    favorite: boolean
+    note: string
+    updatedAt: string
+}
+
+export interface StudySession {
+    version: 3
+    sessionId: string
+    routeId: 'n5'
+    unitId: string
+    studyMode: StudyMode
+    exerciseIds: string[]
+    showFurigana: boolean
+    currentIndex: number
+    answers: TestAnswer[]
+    pendingFeedback: TestAnswer | null
     createdAt: string
 }
 

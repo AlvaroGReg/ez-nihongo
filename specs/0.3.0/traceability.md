@@ -1,23 +1,22 @@
 # Trazabilidad — 0.3.0
 
-Estado: borrador de planificación. Las rutas indicadas son objetivos de
-implementación; deben confirmarse si la estructura cambia durante el diseño.
+Estado: implementada. Las pruebas y rutas siguientes reflejan MVP local.
 
 | Requisito | Implementación prevista | Verificación |
 | --- | --- | --- |
-| REQ-01 | `router/index.ts`, shell público y `CatalogContentProvider` | prueba de arranque sin credenciales y fixture sin llamadas de progreso remoto |
-| REQ-02 | `OnboardingView.vue`, `services/onboarding.ts`, `onboarding:v1` | prueba de persistencia, edición sin pérdida y recarga |
+| REQ-01 | `router/index.ts`, `HomeView.vue`, configuración heredada de 0.1 y `testSession` | `HomeView.spec.ts`; niveles N1–N5, cantidades 10–100 y arranque sin credenciales |
+| REQ-02 | tarjeta de plan en `HomeView.vue`, `OnboardingView.vue`, `DashboardView.vue`, `services/onboarding.ts`, `onboarding:v1` | pruebas de CTA opcional, persistencia, edición sin pérdida, recarga y vuelta a pruebas |
 | REQ-03 | `PlacementView.vue`, selector de placement y `PlacementResult` | pruebas de omisión, resultado y recomendación no bloqueante |
 | REQ-04 | `DashboardView.vue`, definición de ruta N5 y navegación por unidades | prueba de orden, siguiente actividad, repetición y abandono |
 | REQ-05 | artefacto de `ez-nihongo-content`, `services/catalog.ts`, `types/domain.ts` | fixture de kana/vocabulario/kanji, IDs estables y relaciones resolubles |
 | REQ-06 | `CatalogManifest`, parser/validador de catálogo y error localizado | fixtures compatible, incompatible, ausente y relación inválida |
 | REQ-07 | definiciones de ejercicio, `StudyView.vue`, selector y corrector | pruebas de recognition/reading/meaning, opciones y respuestas deterministas |
 | REQ-08 | preferencia `showFurigana`, `StudyView.vue`, almacenamiento local | pruebas de render visible/oculto con identidad y corrección invariantes |
-| REQ-09 | `services/studySelector.ts`, `stores/learning.ts` | pruebas de los cuatro modos y estado sin contenido |
+| REQ-09 | `services/studySelector.ts`, `stores/learning.ts` | selector de cuatro modos; estado sin contenido |
 | REQ-10 | `StudyView.vue`, `stores/learning.ts`, `active-session:v3` | flujo de feedback, recarga, reanudación y abandono |
-| REQ-11 | `AttemptEvent`, `services/progress.ts`, deduplicación por `eventId` | reducer idempotente y contadores tras reanudación |
+| REQ-11 | `AttemptEvent`, `services/progress.ts`, deduplicación por `eventId` | `progress.spec.ts` |
 | REQ-12 | `storage.ts`, `progress:v1`, `annotations:v1`, entitlements gratuitos | pruebas de aislamiento local, JSON corrupto y ausencia de autoridad premium |
-| REQ-13 | `ProgressRecord` y `progress.ts` | tabla de estados, tres sesiones distintas, no `due`/`nextReviewAt` |
+| REQ-13 | `ProgressRecord` y `progress.ts` | `progress.spec.ts`; sin `due`/`nextReviewAt` |
 | REQ-14 | `DashboardView.vue`, cálculo de actividad y recomendación | pruebas de hoy, ayer, hueco de días, contenido pendiente y recomendación |
 | REQ-15 | `services/annotations.ts`, control de favorito y editor de nota | pruebas de crear/editar/vaciar, recarga y separación del catálogo |
 | REQ-16 | componentes de estudio, focus management y atributos ARIA | pruebas de nombres/roles y revisión manual con teclado/lector de pantalla |

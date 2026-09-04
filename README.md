@@ -4,11 +4,13 @@ A localized Vue SPA for practising Japanese JLPT vocabulary. Choose English or
 Spanish, select one or more JLPT levels and type the romanji reading for each
 kanji and hiragana prompt.
 
-Version `0.2.0` adds the localization, versioned session storage, content and
-exercise contracts, provider adapter, attempt events, and local plan hints. Its
-requirements and implementation decisions are documented in
-[`specs/0.2.0/`](specs/0.2.0/). Authentication, payments and remote progress are
-outside this release.
+Version `0.3.0` opens with quick JLPT vocabulary tests (levels and 10–100
+questions), while offering an optional local study plan for users who want a
+guided N5 path. It also includes kana, vocabulary and kanji study,
+deterministic exercises, anonymous progress, streaks, favorites and notes. Its
+requirements, design and traceability are documented in
+[`specs/0.3.0/`](specs/0.3.0/). Authentication, payments and remote progress
+remain outside this release.
 
 ## Development
 

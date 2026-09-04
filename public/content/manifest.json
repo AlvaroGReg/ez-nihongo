@@ -1,0 +1,9 @@
+{
+  "schemaVersion": 1,
+  "catalogVersion": "0.3.0",
+  "minClientVersion": "0.3.0",
+  "locales": ["en", "es"],
+  "routes": [{"id": "n5", "unitIds": ["n5-kana", "n5-life"]}],
+  "contentFiles": ["n5.json"],
+  "sources": [{"id": "ez-curated", "name": "EZ Nihongo curated starter set", "license": "CC BY 4.0"}]
+}

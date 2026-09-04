@@ -2,7 +2,7 @@
 
 ## Estado y objetivo
 
-Estado: borrador de planificación.
+Estado: implementada en MVP local; pendiente validación manual de accesibilidad.
 
 La versión 0.3.0 convierte el test de vocabulario en un MVP gratuito de
 aprendizaje para principiantes. Una persona debe poder entrar sin cuenta,
@@ -16,17 +16,21 @@ progreso, sincronización, pagos ni SRS con fechas.
 
 ### US-01 — Entrada y orientación
 
-Como estudiante nuevo, quiero empezar sin crear una cuenta y configurar mi
-objetivo para recibir una recomendación comprensible.
+Como estudiante nuevo, quiero empezar sin cuenta con una prueba breve y
+configurar un plan solo cuando necesite una ruta más guiada.
 
-**REQ-01:** La demo y la ruta gratuita deben poder iniciarse sin login, sin
-token y sin enviar progreso personal a un servidor. El catálogo público se
-consume como artefacto versionado; la API externa de vocabulario de 0.2.0 no es
-un requisito de ejecución para la ruta 0.3.0.
+**REQ-01:** La pantalla raíz debe mostrar primero la configuración de una prueba
+rápida de vocabulario, con selección de uno o más niveles JLPT N5–N1 y una
+cantidad de 10 a 100 preguntas en incrementos de 10, como en 0.1.0. Debe poder
+iniciarse sin login, sin token y sin enviar progreso personal a un servidor.
+El catálogo público se consume como artefacto versionado; la API externa de
+vocabulario de 0.2.0 no es un requisito de ejecución para la ruta 0.3.0.
 
-**REQ-02:** El onboarding debe recoger y conservar localmente un objetivo, un
-nivel inicial y un tiempo diario elegido. Debe poder repetirse desde ajustes o
-desde el dashboard sin borrar intentos, progreso, favoritos ni notas.
+**REQ-02:** La creación de un plan de estudio debe estar destacada en la
+pantalla raíz, pero ser opcional y posterior a la prueba rápida. El onboarding
+debe recoger y conservar localmente un objetivo, un nivel inicial y un tiempo
+diario elegido. Debe poder repetirse desde el dashboard sin borrar intentos,
+progreso, favoritos ni notas.
 
 **REQ-03:** La prueba de nivel básica debe poder omitirse, usar ejercicios del
 catálogo local, terminar mostrando una recomendación de punto de entrada y no
@@ -38,9 +42,20 @@ acceso a la ruta N5.
 ```gherkin
 Given the user has no local onboarding data
 When the application is opened
-Then it shows the onboarding or public start entry
+Then it shows the quick test configuration before the study plan form
+And it offers a prominent entry to create a study plan
 And it does not request authentication
 And no personal progress is sent to a remote service
+```
+
+**Escenario:** acceso recurrente a pruebas y plan
+
+```gherkin
+Given the user has a saved study plan
+When the application is opened
+Then quick test configuration is immediately available
+And the saved plan is available from a separate highlighted entry
+And the dashboard offers a direct link back to quick tests
 ```
 
 **Escenario:** onboarding persistente

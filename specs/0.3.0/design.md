@@ -16,9 +16,11 @@
 
 ```text
 Public start
-  -> Onboarding local (objetivo, nivel, tiempo)
-  -> Placement opcional
-  -> Dashboard
+  -> Quick test setup (niveles JLPT, 10–100 preguntas)
+  -> Test de vocabulario 0.1 compatible
+  -> Resultados
+  -> Onboarding local opcional (objetivo, nivel, tiempo)
+  -> Dashboard / ruta N5
   -> ruta N5 fija / modo de estudio
   -> CatalogContentProvider
   -> StudySession v3
@@ -183,6 +185,12 @@ autoriza crear sus fuentes dentro de `ez-nihongo`.
 
 ## Onboarding y rutas
 
+`HomeView` es la puerta pública principal y conserva la configuración del test
+de vocabulario de 0.1.0: niveles N5–N1 seleccionables y cantidades de 10 a 100
+en incrementos de 10. No exige perfil ni autenticación. Desde esa pantalla se
+ofrece una tarjeta destacada para crear el plan, pero la prueba rápida sigue
+siendo la acción inicial.
+
 `OnboardingView` guarda un `OnboardingProfile` en
 `ez-nihongo:onboarding:v1`. El formulario puede editarse posteriormente sin
 alterar los agregados de progreso. La prueba de nivel usa un conjunto pequeño
@@ -190,7 +198,8 @@ de ejercicios deterministas del catálogo; su resultado solo selecciona una
 recomendación.
 
 `DashboardView` consume el perfil, la ruta N5, los agregados y las
-anotaciones. El orden de recomendación es:
+anotaciones. Mantiene un enlace visible a la prueba rápida para que el test no
+quede oculto tras la planificación. El orden de recomendación es:
 
 1. unidad nueva compatible con el nivel inicial;
 2. errores pendientes;

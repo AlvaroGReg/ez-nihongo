@@ -1,0 +1,25 @@
+{
+  "units": [
+    {"id":"n5-kana","routeId":"n5","order":1,"title":{"en":"Kana foundations","es":"Fundamentos de kana"},"contentIds":["kana:あ","kana:ア","kana:ね","vocabulary:猫","kanji:日"],"exerciseIds":["ex:kana-a","ex:kana-a-reading","ex:cat-reading","ex:cat-meaning","ex:日-reading"]},
+    {"id":"n5-life","routeId":"n5","order":2,"title":{"en":"Everyday words","es":"Palabras cotidianas"},"contentIds":["vocabulary:学生","kanji:学"],"exerciseIds":["ex:student-reading","ex:student-meaning","ex:学-reading"]}
+  ],
+  "content": [
+    {"id":"kana:あ","type":"kana","localized":{"en":{"en":"a","es":"a"},"es":{"en":"a","es":"a"}},"script":"hiragana","relations":[]},
+    {"id":"kana:ア","type":"kana","localized":{"en":{"en":"a","es":"a"},"es":{"en":"a","es":"a"}},"script":"katakana","relations":[]},
+    {"id":"kana:ね","type":"kana","localized":{"en":{"en":"ne","es":"ne"},"es":{"en":"ne","es":"ne"}},"script":"hiragana","relations":[]},
+    {"id":"vocabulary:猫","type":"vocabulary","level":5,"localized":{"en":{"en":"cat","es":"gato"},"es":{"en":"cat","es":"gato"}},"reading":"ねこ","relations":[{"type":"reading","contentId":"kana:ね"},{"type":"kanji","contentId":"kanji:日"}]},
+    {"id":"kanji:日","type":"kanji","level":5,"localized":{"en":{"en":"day; sun","es":"día; sol"},"es":{"en":"day; sun","es":"día; sol"}},"reading":"にち","relations":[{"type":"vocabulary","contentId":"vocabulary:猫"}]},
+    {"id":"vocabulary:学生","type":"vocabulary","level":5,"localized":{"en":{"en":"student","es":"estudiante"},"es":{"en":"student","es":"estudiante"}},"reading":"がくせい","relations":[{"type":"kanji","contentId":"kanji:学"}]},
+    {"id":"kanji:学","type":"kanji","level":5,"localized":{"en":{"en":"study","es":"estudio"},"es":{"en":"study","es":"estudio"}},"reading":"がく","relations":[{"type":"vocabulary","contentId":"vocabulary:学生"}]}
+  ],
+  "exercises": [
+    {"id":"ex:kana-a","contentId":"kana:あ","type":"recognition","locale":"en","prompt":"あ","options":[{"id":"a","label":"a","correct":true},{"id":"i","label":"i","correct":false},{"id":"u","label":"u","correct":false}],"showFurigana":false,"premium":false},
+    {"id":"ex:kana-a-reading","contentId":"kana:ア","type":"reading","locale":"en","prompt":"ア","acceptedAnswers":["a"],"showFurigana":false,"premium":false},
+    {"id":"ex:cat-reading","contentId":"vocabulary:猫","type":"reading","locale":"en","prompt":"猫","acceptedAnswers":["neko"],"showFurigana":true,"premium":false},
+    {"id":"ex:cat-meaning","contentId":"vocabulary:猫","type":"meaning","locale":"en","prompt":"猫","options":[{"id":"cat","label":"cat","correct":true},{"id":"dog","label":"dog","correct":false}],"showFurigana":true,"premium":false},
+    {"id":"ex:日-reading","contentId":"kanji:日","type":"reading","locale":"en","prompt":"日","acceptedAnswers":["nichi","niichi"],"showFurigana":true,"premium":false},
+    {"id":"ex:student-reading","contentId":"vocabulary:学生","type":"reading","locale":"en","prompt":"学生","acceptedAnswers":["gakusei"],"showFurigana":true,"premium":false},
+    {"id":"ex:student-meaning","contentId":"vocabulary:学生","type":"meaning","locale":"en","prompt":"学生","options":[{"id":"student","label":"student","correct":true},{"id":"teacher","label":"teacher","correct":false}],"showFurigana":true,"premium":false},
+    {"id":"ex:学-reading","contentId":"kanji:学","type":"reading","locale":"en","prompt":"学","acceptedAnswers":["gaku"],"showFurigana":true,"premium":false}
+  ]
+}

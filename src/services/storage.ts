@@ -1,9 +1,23 @@
-import type { Locale, TestConfig, TestResult, TestSession } from '@/types/domain'
+import type {
+    Annotation,
+    Locale,
+    OnboardingProfile,
+    ProgressStoreData,
+    StudySession,
+    TestConfig,
+    TestResult,
+    TestSession,
+} from '@/types/domain'
 
 export const LOCALE_KEY = 'ez-nihongo:locale:v1'
 export const ACTIVE_SESSION_KEY = 'ez-nihongo:active-session:v2'
 export const LEGACY_ACTIVE_SESSION_KEY = 'ez-nihongo:active-session:v1'
 export const HISTORY_KEY = 'ez-nihongo:history:v1'
+export const ONBOARDING_KEY = 'ez-nihongo:onboarding:v1'
+export const PROGRESS_KEY = 'ez-nihongo:progress:v1'
+export const ANNOTATIONS_KEY = 'ez-nihongo:annotations:v1'
+export const STUDY_SESSION_KEY = 'ez-nihongo:active-session:v3'
+export const FURIGANA_KEY = 'ez-nihongo:furigana:v1'
 
 function read(key: string): string | null {
     try {
@@ -26,6 +40,17 @@ function remove(key: string): void {
         window.localStorage.removeItem(key)
     } catch {
         // Ignore storage restrictions and keep the application usable.
+    }
+}
+
+function readJson<T>(key: string, fallback: T): T {
+    const raw = read(key)
+    if (!raw) return fallback
+    try {
+        return JSON.parse(raw) as T
+    } catch {
+        remove(key)
+        return fallback
     }
 }
 
@@ -217,4 +242,78 @@ export function loadHistory(): TestResult[] {
 
 export function appendHistory(result: TestResult): void {
     write(HISTORY_KEY, JSON.stringify([...loadHistory(), result]))
+}
+
+export function loadOnboarding(): OnboardingProfile | null {
+    const value = readJson<unknown>(ONBOARDING_KEY, null)
+    if (!isRecord(value)) return null
+    const validGoal = value.goal === 'general' || value.goal === 'travel' || value.goal === 'jlpt-n5'
+    const validLevel = value.initialLevel === 'zero' || value.initialLevel === 'kana' || value.initialLevel === 'n5'
+    const validMinutes = value.dailyMinutes === 5 || value.dailyMinutes === 10 || value.dailyMinutes === 15 || value.dailyMinutes === 20
+    if (value.version !== 1 || !validGoal || !validLevel || !validMinutes || typeof value.completedAt !== 'string') {
+        remove(ONBOARDING_KEY)
+        return null
+    }
+    return value as unknown as OnboardingProfile
+}
+
+export function saveOnboarding(profile: OnboardingProfile): void {
+    write(ONBOARDING_KEY, JSON.stringify(profile))
+}
+
+export function loadProgress(): ProgressStoreData {
+    const value = readJson<unknown>(PROGRESS_KEY, null)
+    if (!isRecord(value) || value.version !== 1 || !isRecord(value.records) || !Array.isArray(value.events)) {
+        if (value !== null) remove(PROGRESS_KEY)
+        return { version: 1, records: {}, events: [] }
+    }
+    return value as unknown as ProgressStoreData
+}
+
+export function saveProgress(progress: ProgressStoreData): void {
+    write(PROGRESS_KEY, JSON.stringify(progress))
+}
+
+export function loadAnnotations(): Record<string, Annotation> {
+    const value = readJson<unknown>(ANNOTATIONS_KEY, null)
+    if (!isRecord(value)) {
+        if (value !== null) remove(ANNOTATIONS_KEY)
+        return {}
+    }
+    return Object.fromEntries(
+        Object.entries(value).filter(([, annotation]) => {
+            if (!isRecord(annotation)) return false
+            return typeof annotation.contentId === 'string' && typeof annotation.favorite === 'boolean' && typeof annotation.note === 'string'
+        }),
+    ) as Record<string, Annotation>
+}
+
+export function saveAnnotations(annotations: Record<string, Annotation>): void {
+    write(ANNOTATIONS_KEY, JSON.stringify(annotations))
+}
+
+export function loadStudySession(): StudySession | null {
+    const value = readJson<unknown>(STUDY_SESSION_KEY, null)
+    if (!isRecord(value) || value.version !== 3 || typeof value.sessionId !== 'string' || typeof value.unitId !== 'string' || !Array.isArray(value.exerciseIds) || !Array.isArray(value.answers) || typeof value.currentIndex !== 'number' || value.currentIndex < 0 || value.currentIndex >= value.exerciseIds.length) {
+        if (value !== null) remove(STUDY_SESSION_KEY)
+        return null
+    }
+    return value as unknown as StudySession
+}
+
+export function saveStudySession(session: StudySession): void {
+    write(STUDY_SESSION_KEY, JSON.stringify(session))
+}
+
+export function loadShowFurigana(): boolean {
+    const value = read(FURIGANA_KEY)
+    return value === null ? true : value === 'true'
+}
+
+export function saveShowFurigana(value: boolean): void {
+    write(FURIGANA_KEY, String(value))
+}
+
+export function clearStudySession(): void {
+    remove(STUDY_SESSION_KEY)
 }

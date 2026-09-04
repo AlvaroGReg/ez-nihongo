@@ -3,6 +3,7 @@ import { computed, ref } from 'vue'
 import { useRouter } from 'vue-router'
 
 import { t } from '@/i18n'
+import { getOnboardingProfile } from '@/services/onboarding'
 import { testSession } from '@/stores/testSession'
 import type { JlptLevel } from '@/types/domain'
 
@@ -19,6 +20,7 @@ const levels = [
     { value: 1 as JlptLevel, label: 'N1' },
 ]
 const hasApiError = computed(() => testSession.state.error !== null)
+const hasStudyPlan = computed(() => getOnboardingProfile() !== null)
 
 async function startTest(): Promise<void> {
     validationError.value = ''
@@ -56,9 +58,9 @@ function backToSetup(): void {
 <template>
     <main class="page-shell setup-page">
         <section class="hero-card" aria-labelledby="app-title">
-            <p class="eyebrow">{{ t('appEyebrow') }}</p>
+            <p class="eyebrow">{{ t('quickPracticeEyebrow') }}</p>
             <h1 id="app-title">{{ t('appTitle') }}</h1>
-            <p class="hero-copy">{{ t('homeDescription') }}</p>
+            <p class="hero-copy">{{ t('quickPracticeDescription') }}</p>
 
             <form class="setup-form" @submit.prevent="startTest">
                 <div class="form-grid">
@@ -78,7 +80,7 @@ function backToSetup(): void {
 
                     <label class="field">
                         <span class="range-label">
-                            <span>{{ t('numberOfWords') }}</span>
+                            <span>{{ t('numberOfQuestions') }}</span>
                             <output>{{ questionCount }}</output>
                         </span>
                         <input
@@ -88,7 +90,7 @@ function backToSetup(): void {
                             min="10"
                             max="100"
                             step="10"
-                            :aria-label="t('numberOfWords')"
+                            :aria-label="t('numberOfQuestions')"
                         />
                         <span class="range-limits" aria-hidden="true">
                             <span>10</span>
@@ -120,6 +122,17 @@ function backToSetup(): void {
                     {{ testSession.state.isLoading ? t('loadingVocabulary') : t('startTest') }}
                 </button>
             </form>
+
+            <aside class="plan-callout" aria-labelledby="plan-title">
+                <div>
+                    <p class="eyebrow">{{ t('studyPlanEyebrow') }}</p>
+                    <h2 id="plan-title">{{ t('studyPlanTitle') }}</h2>
+                    <p>{{ t('studyPlanDescription') }}</p>
+                </div>
+                <RouterLink class="button button-secondary" :to="hasStudyPlan ? '/dashboard' : '/onboarding'">
+                    {{ hasStudyPlan ? t('viewStudyPlan') : t('createStudyPlan') }}
+                </RouterLink>
+            </aside>
         </section>
     </main>
 </template>
