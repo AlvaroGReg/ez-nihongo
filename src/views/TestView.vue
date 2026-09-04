@@ -8,6 +8,7 @@ const router = useRouter()
 const response = ref('')
 const inputError = ref('')
 const responseInput = ref<HTMLInputElement | null>(null)
+const feedbackPanel = ref<HTMLElement | null>(null)
 const currentQuestion = testSession.currentQuestion
 const hasFallbackLevels = computed(() => {
     const session = testSession.state.activeSession
@@ -18,6 +19,10 @@ function focusResponse(): void {
     void nextTick(() => responseInput.value?.focus())
 }
 
+function focusFeedback(): void {
+    void nextTick(() => feedbackPanel.value?.focus())
+}
+
 function submitAnswer(): void {
     inputError.value = ''
     if (response.value.trim() === '') {
@@ -26,7 +31,7 @@ function submitAnswer(): void {
         return
     }
 
-    if (testSession.submitAnswer(response.value)) responseInput.value?.blur()
+    if (testSession.submitAnswer(response.value)) focusFeedback()
 }
 
 function continueTest(): void {
@@ -123,11 +128,14 @@ watch(
 
             <section
                 v-else
+                ref="feedbackPanel"
                 class="feedback"
+                tabindex="-1"
                 :class="{
                     'feedback-correct': testSession.state.activeSession.pendingFeedback.isCorrect,
                 }"
                 role="status"
+                @keydown.enter.prevent="continueTest"
             >
                 <p class="feedback-title">
                     {{

@@ -41,10 +41,7 @@ describe('TestView', () => {
         expect(wrapper.text()).toContain('cat')
         expect(wrapper.text()).toContain('Continue')
 
-        await wrapper
-            .findAll('button')
-            .find((button) => button.text() === 'Continue')
-            ?.trigger('click')
+        await wrapper.get('.feedback').trigger('keydown.enter')
         expect(testSession.state.activeSession).toBeNull()
         expect(testSession.state.result?.score).toBe(1)
     })
