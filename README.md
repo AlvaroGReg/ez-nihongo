@@ -12,7 +12,7 @@ decisions are documented in [`specs/0.1.0/`](specs/0.1.0/).
 Install dependencies and start the local development server:
 
 ```sh
-npm ci
+npm i
 npm run dev
 ```
 
