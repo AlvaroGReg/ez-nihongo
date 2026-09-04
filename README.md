@@ -1,12 +1,11 @@
 # ez-nihongo
 
-An English SPA for practising Japanese JLPT vocabulary. Choose a JLPT level
-and a number of words, then type the romanji reading for each kanji and
+An English SPA for practising Japanese JLPT vocabulary. Choose one or more JLPT
+levels and a number of words, then type the romanji reading for each kanji and
 hiragana prompt.
 
 The first milestone is version `0.1.0`. Its requirements and implementation
-decisions are documented in [`specs/0.1.0/`](specs/0.1.0/), and the development
-roadmap is in [`roadmap.md`](roadmap.md).
+decisions are documented in [`specs/0.1.0/`](specs/0.1.0/).
 
 ## Development
 

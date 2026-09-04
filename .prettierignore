@@ -9,3 +9,7 @@ package-lock.json
 .agents
 AGENTS.md
 skills-lock.json
+*.yml
+*.yaml
+*.md
+*.json

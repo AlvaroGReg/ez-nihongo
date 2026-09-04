@@ -19,8 +19,8 @@ cada transición de estado.
 ## Contratos internos
 
 - `JlptLevel`: `1 | 2 | 3 | 4 | 5`, con presentación `N1`–`N5`.
-- `VocabularyWord`: `word`, `furigana`, `romaji` y `level`.
-- `TestConfig`: `level` y `questionCount`.
+- `VocabularyWord`: `word`, `meaning`, `furigana`, `romaji` y `level`.
+- `TestConfig`: `levels` y `questionCount`.
 - `TestQuestion`: entrada de vocabulario usada en una sesión.
 - `TestAnswer`: índice de pregunta, respuesta original, respuesta esperada y
   resultado.
@@ -32,13 +32,18 @@ cada transición de estado.
 
 ## API
 
-El adaptador valida que cada entrada tenga palabra, furigana textual, romanji no
-vacío y nivel JLPT válido. Las entradas inválidas se descartan y se continúa la
-paginación. El offset avanza según el número de entradas devueltas por la API,
-evitando bucles si el servidor devuelve una página inesperada.
+El adaptador valida que cada entrada tenga palabra y significado textuales,
+furigana textual, romanji no vacío y nivel JLPT válido. Las entradas inválidas
+se descartan y se continúa la paginación. El offset avanza según el número de
+entradas devueltas por la API, evitando bucles si el servidor devuelve una
+página inesperada.
 
 Las palabras se deduplican por su representación visible (`word` + `furigana`)
 y se mezclan antes de crear la sesión.
+
+La comprobación de respuestas conserva `ei` como escritura diferenciada. Usa el
+`furigana` para aceptar `ee`/`ē` solo en `ええ`, mientras que las vocales largas
+aceptan sus formas con macrón y duplicadas; `ō` acepta además `ou` y `oo`.
 
 ## Persistencia
 

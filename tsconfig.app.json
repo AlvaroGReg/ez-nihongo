@@ -6,6 +6,10 @@
     // Extra safety for array and object lookups, but may have false positives.
     "noUncheckedIndexedAccess": true,
 
+    // Keep application code free of unused declarations and parameters.
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+
     // Path mapping for cleaner imports.
     "paths": {
       "@/*": ["./src/*"]

@@ -4,8 +4,8 @@
 
 ### US-01 — Configurar un test
 
-Como estudiante, quiero elegir un nivel JLPT y una cantidad de palabras para
-iniciar una sesión de práctica ajustada a mi objetivo.
+Como estudiante, quiero elegir varios niveles JLPT y una cantidad de palabras
+para iniciar una sesión de práctica combinada y ajustada a mi objetivo.
 
 ### US-02 — Responder vocabulario
 
@@ -26,7 +26,7 @@ perder temporalmente la conexión.
 
 ### REQ-01 — Configuración
 
-- Los niveles disponibles son N5, N4, N3, N2 y N1.
+- Los niveles disponibles son N5, N4, N3, N2 y N1, y se puede elegir más de uno.
 - Las cantidades disponibles son 10, 20, …, 100.
 - El test no comienza hasta que se han cargado todas las preguntas.
 
@@ -60,8 +60,14 @@ And starts only when 20 unique questions are available
 ### REQ-03 — Respuesta
 
 - Se muestra `word` y, si existe, `furigana`.
-- La comparación ignora mayúsculas, espacios exteriores y diacríticos Unicode.
-- `ō` y `o` son equivalentes; `o` y `ou` no lo son automáticamente.
+- Después de responder se muestra el significado (`meaning`) de la palabra.
+- La comparación ignora mayúsculas y espacios exteriores, y normaliza la
+  composición Unicode sin eliminar las marcas de vocal larga.
+- Las vocales largas aceptan sus alias de teclado: `ā`/`aa`, `ī`/`ii`,
+  `ū`/`uu`, `ē`/`ee` para `ええ`, y `ō`/`oo`/`ou` para `おお` o `おう`.
+- `えい` se escribe `ei` aunque suene como una `ē` larga (por ejemplo,
+  `先生` es `sensei`); no se convierte automáticamente en `ee` ni `ē`.
+- Las vocales cortas no equivalen a las largas: `o` y `ou` son distintos.
 - Una respuesta vacía no se corrige y solicita una respuesta.
 
 **Escenario:** respuesta incorrecta
