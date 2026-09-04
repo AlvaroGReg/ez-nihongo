@@ -75,14 +75,13 @@ export interface TestAnswer {
     response: string
     expected: string
     isCorrect: boolean
-    /** Optional fields keep answers from 0.1.0 readable during migration. */
     eventId?: string
     contentId?: string
     exerciseId?: string
 }
 
 export interface TestSession {
-    version: 1
+    version: 2
     config: TestConfig
     questions: VocabularyWord[]
     currentIndex: number

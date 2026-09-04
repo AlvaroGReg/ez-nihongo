@@ -5,8 +5,8 @@
 - Mantener Vue 3, Vite, Vue Router y el flujo de sesión actual.
 - No introducir un backend ni una dependencia de pago en esta versión.
 - Mantener el adaptador de la API externa detrás de una interfaz de proveedor.
-- Preferir contratos pequeños y datos opcionales para que 0.3.0 pueda añadir
-  catálogo local sin migrar de nuevo todo el dominio.
+- Preferir contratos pequeños para que 0.3.0 pueda añadir catálogo local sin
+  acoplar de nuevo todo el dominio.
 
 ## Contratos de dominio
 
@@ -60,10 +60,8 @@ interface ProgressSnapshot {
 }
 ```
 
-Los tipos existentes de 0.1.0 pueden conservarse como compatibilidad de
-entrada/salida durante la transición. `VocabularyWord` debe recibir una clave
-estable derivada por el adaptador o suministrada por el futuro catálogo, sin
-usar traducciones como identidad.
+`VocabularyWord` debe recibir una clave estable derivada por el adaptador o
+suministrada por el futuro catálogo, sin usar traducciones como identidad.
 
 ## Localización
 
@@ -76,12 +74,12 @@ usar traducciones como identidad.
 - Actualizar `document.documentElement.lang` al cambiar de locale.
 - Mantener los textos del contenido separados de los textos de la interfaz.
 
-## Sesión y compatibilidad
+## Sesión actual y limpieza local
 
-- Mantener `ez-nihongo:active-session:v1` y `ez-nihongo:history:v1`.
-- Añadir campos opcionales para `contentType`, `exerciseType` y `studyMode`.
-- Los campos ausentes en una sesión antigua significan vocabulario, lectura
-  romanji y modo libre equivalente al flujo 0.1.0.
+- Usar `ez-nihongo:active-session:v2` y `ez-nihongo:history:v1`.
+- El arranque elimina `ez-nihongo:active-session:v1` sin intentar migrarla.
+- Las sesiones nuevas incluyen `sessionId`, `contentType`, `exerciseType` y
+  `studyMode`.
 - No guardar una traducción ya renderizada en la sesión; resolverla al mostrar
   según locale.
 
@@ -123,7 +121,7 @@ el entitlement firmado o consultado al backend será la autoridad.
 
 - `type-check`, pruebas unitarias y build deben seguir funcionando.
 - Las nuevas abstracciones deben probarse sin red mediante proveedores mock.
-- Las migraciones de almacenamiento deben probar JSON válido, corrupto,
-  desconocido y sesión heredada.
+- El almacenamiento debe probar JSON válido, corrupto, desconocido y el
+  descarte de sesiones heredadas.
 - No se ejecutan pruebas de Supabase, Stripe ni móvil en esta versión porque no
   forman parte del alcance.

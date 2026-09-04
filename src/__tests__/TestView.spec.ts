@@ -7,7 +7,7 @@ import TestView from '@/views/TestView.vue'
 import router from '@/router'
 
 const session: TestSession = {
-    version: 1,
+    version: 2,
     config: { levels: [5], questionCount: 1 },
     questions: [{ word: '猫', meaning: 'cat', furigana: 'ねこ', romaji: 'neko', level: 5 }],
     currentIndex: 0,

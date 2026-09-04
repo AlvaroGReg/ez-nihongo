@@ -38,12 +38,13 @@ su texto traducido y de la posición que ocupe en una respuesta externa.
 **REQ-07:** El modelo debe admitir ejercicios de lectura, significado y
 escritura, aunque 0.2.0 solo conserve el ejercicio actual de romanji.
 
-### US-03 — Mantener compatibilidad
+### US-03 — Gestionar la sesión actual
 
-Como usuario existente, quiero poder recuperar una sesión creada con 0.1.0.
+Como estudiante, quiero que las sesiones guardadas pertenezcan al formato
+actual de la aplicación para evitar recuperar datos obsoletos.
 
-**REQ-08:** Las sesiones `v1` existentes deben seguir cargándose sin perder
-preguntas ni respuestas.
+**REQ-08:** La aplicación debe usar un formato versionado para la sesión activa
+y eliminar las sesiones de formatos anteriores sin intentar migrarlas.
 
 **REQ-09:** Un contenido externo con `meaning` único debe normalizarse como
 significado inglés sin exigir que la API ya sea multilingüe.
@@ -99,11 +100,11 @@ Scenario: idioma no altera una sesión
 ```
 
 ```gherkin
-Scenario: sesión heredada
-  Given a valid v1 session stored by version 0.1.0
+Scenario: sesión heredada descartada
+  Given a session from an older storage format exists in localStorage
   When the application starts version 0.2.0
-  Then the session can be resumed
-  And its questions and answers are preserved
+  Then the old session is deleted
+  And the resume dialog is not shown for that session
 ```
 
 ```gherkin

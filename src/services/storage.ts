@@ -1,7 +1,8 @@
-import type { JlptLevel, Locale, TestConfig, TestResult, TestSession } from '@/types/domain'
+import type { Locale, TestConfig, TestResult, TestSession } from '@/types/domain'
 
 export const LOCALE_KEY = 'ez-nihongo:locale:v1'
-export const ACTIVE_SESSION_KEY = 'ez-nihongo:active-session:v1'
+export const ACTIVE_SESSION_KEY = 'ez-nihongo:active-session:v2'
+export const LEGACY_ACTIVE_SESSION_KEY = 'ez-nihongo:active-session:v1'
 export const HISTORY_KEY = 'ez-nihongo:history:v1'
 
 function read(key: string): string | null {
@@ -44,29 +45,22 @@ export function saveLocale(locale: Locale): void {
 function isSession(value: unknown): value is TestSession {
     if (typeof value !== 'object' || value === null) return false
     const candidate = value as Partial<TestSession>
+    const config = candidate.config as Partial<TestConfig> | undefined
     return (
-        candidate.version === 1 &&
+        candidate.version === 2 &&
+        typeof config === 'object' &&
+        config !== null &&
+        Array.isArray(config.levels) &&
+        typeof config.questionCount === 'number' &&
         typeof candidate.currentIndex === 'number' &&
         Array.isArray(candidate.questions) &&
         Array.isArray(candidate.answers) &&
+        typeof candidate.sessionId === 'string' &&
+        candidate.contentType === 'vocabulary' &&
+        candidate.exerciseType === 'reading' &&
+        candidate.studyMode === 'new' &&
         (candidate.pendingFeedback === null || typeof candidate.pendingFeedback === 'object')
     )
-}
-
-function migrateSession(value: unknown): TestSession | null {
-    if (!isSession(value)) return null
-
-    const config = value.config as Partial<TestConfig> & { level?: JlptLevel }
-    if (Array.isArray(config.levels)) return value
-    if (config.level === undefined || typeof config.questionCount !== 'number') return null
-
-    return {
-        ...value,
-        config: {
-            levels: [config.level],
-            questionCount: config.questionCount,
-        },
-    }
 }
 
 function isResult(value: unknown): value is TestResult {
@@ -83,13 +77,13 @@ function isResult(value: unknown): value is TestResult {
 }
 
 export function loadActiveSession(): TestSession | null {
+    remove(LEGACY_ACTIVE_SESSION_KEY)
     const raw = read(ACTIVE_SESSION_KEY)
     if (!raw) return null
 
     try {
         const parsed: unknown = JSON.parse(raw)
-        const session = migrateSession(parsed)
-        if (session) return session
+        if (isSession(parsed)) return parsed
     } catch {
         // Remove malformed JSON below.
     }
@@ -104,6 +98,7 @@ export function saveActiveSession(session: TestSession): void {
 
 export function clearActiveSession(): void {
     remove(ACTIVE_SESSION_KEY)
+    remove(LEGACY_ACTIVE_SESSION_KEY)
 }
 
 export function loadHistory(): TestResult[] {

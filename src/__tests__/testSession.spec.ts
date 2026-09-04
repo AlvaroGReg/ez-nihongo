@@ -1,6 +1,11 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 
-import { ACTIVE_SESSION_KEY, HISTORY_KEY, loadActiveSession } from '@/services/storage'
+import {
+    ACTIVE_SESSION_KEY,
+    HISTORY_KEY,
+    LEGACY_ACTIVE_SESSION_KEY,
+    loadActiveSession,
+} from '@/services/storage'
 import { createTestSessionStore } from '@/stores/testSession'
 import type { TestConfig, VocabularyWord } from '@/types/domain'
 
@@ -75,7 +80,7 @@ describe('test session store', () => {
         expect(JSON.parse(window.localStorage.getItem(HISTORY_KEY) ?? '[]')).toHaveLength(1)
     })
 
-    it('migrates a 0.1 session without rewriting its content or answers', () => {
+    it('removes a legacy session instead of migrating it', () => {
         const legacySession = {
             version: 1,
             config: { level: 5, questionCount: 1 },
@@ -86,13 +91,12 @@ describe('test session store', () => {
             levelsUsed: [5],
             createdAt: '2026-01-01T00:00:00.000Z',
         }
-        window.localStorage.setItem(ACTIVE_SESSION_KEY, JSON.stringify(legacySession))
+        window.localStorage.setItem(LEGACY_ACTIVE_SESSION_KEY, JSON.stringify(legacySession))
 
-        const migrated = loadActiveSession()
+        const discarded = loadActiveSession()
 
-        expect(migrated?.config).toEqual({ levels: [5], questionCount: 1 })
-        expect(migrated?.questions).toEqual(legacySession.questions)
-        expect(migrated?.answers).toEqual([])
-        expect(migrated?.sessionId).toBeUndefined()
+        expect(discarded).toBeNull()
+        expect(window.localStorage.getItem(LEGACY_ACTIVE_SESSION_KEY)).toBeNull()
+        expect(window.localStorage.getItem(ACTIVE_SESSION_KEY)).toBeNull()
     })
 })

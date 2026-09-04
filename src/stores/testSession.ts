@@ -87,7 +87,7 @@ export function createTestSessionStore(
                     createVocabularyContentId(question.word, question.furigana),
             }))
             state.activeSession = {
-                version: 1,
+                version: 2,
                 config,
                 questions,
                 currentIndex: 0,
