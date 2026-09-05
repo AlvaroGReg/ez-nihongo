@@ -205,3 +205,10 @@ export interface TestResult {
     levelsUsed: JlptLevel[]
     attempts?: AttemptEvent[]
 }
+
+export interface UserAuthState {
+    /** true = logged in, false = anonymous */
+    isRegistered: boolean
+    userId?: string
+    email?: string | null
+}
